@@ -1,0 +1,16 @@
+#! /bin/sh
+
+# Save currently focus workspace
+focused_workspace=$(
+    i3-msg -t get_workspaces | jq -r '.[] | select(.focused) | .name'
+)
+
+i3-msg -t get_workspaces | jq -r '.[] | select(.focused) | .name' |
+    while IFS= read -r workspace; do
+        i3-msg "workspace \"$workspace\"; move workspace to output eDP-1"
+    done
+
+# Make sure you're back to focused workspace
+if [ -n "$focused_workspace" ]; then
+    i3-msg "workspace \"$focused_workspace\""
+fi

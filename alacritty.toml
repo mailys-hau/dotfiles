@@ -1,0 +1,64 @@
+[general]
+live_config_reload = true
+
+[window]
+opacity = 0.85
+
+[scrolling]
+history = 5000
+
+[font]
+size = 13
+
+[font.normal]
+family = "Terminess Nerd Font Mono"
+style = "Regular"
+
+[colors.primary]
+background = "#17100D"
+foreground = "#FFF3B0"
+
+[colors.cursor]
+cursor = "#FFF3B0"
+text = "#17100D"
+
+[colors.selection]
+background = "#DCCB8B"
+text = "#17100D"
+
+[colors.normal]
+black   = "#17100D"
+red     = "#8F1D13"
+green   = "#71843B"
+yellow  = "#B66A24"
+blue    = "#59666A"
+magenta = "#76504C"
+cyan    = "#6F8172"
+white   = "#DCCB8B"
+
+[colors.bright]
+black   = "#59483D"
+red     = "#D33A1F"
+green   = "#B8C95A"
+yellow  = "#EFD65D"
+blue    = "#9EAAA3"
+magenta = "#C08172"
+cyan    = "#A9BEA2"
+white   = "#FFF3B0"
+
+[cursor.style]
+shape = "Block"
+blinking = "On"
+
+[cursor]
+blink_interval = 750
+
+[[keyboard.bindings]]
+key = "C"
+mods = "Control|Shift"
+action = "Copy"
+
+[[keyboard.bindings]]
+key = "V"
+mods = "Control|Shift"
+action = "Paste"

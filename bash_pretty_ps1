@@ -1,0 +1,104 @@
+# DESCRIPTION:
+#
+#   Set the bash prompt according to:
+#    * the active virtualenv
+#    * the branch/status of the current git repository
+#
+# LINEAGE:
+#
+#   Based on work by romanlevin
+#
+#   https://gist.github.com/romanlevin/5e9422045bb6a5eb6558cbe371cd8635
+
+
+# The various escape codes that we can use to color our prompt.
+       YELLOW="\[\033[0;33m\]"
+        GREEN="\[\033[0;32m\]"
+    LIGHT_RED="\[\033[0;91m\]"
+   LIGHT_CYAN="\[\033[0;96m\]"
+   LIGHT_BLUE="\[\033[0;94m\]"
+  LIGHT_GREEN="\[\033[0;92m\]"
+ LIGHT_YELLOW="\[\033[0;93m\]"
+      DEFAULT="\[\e[0m\]"
+
+
+# Detect whether the current directory is a git repository.
+is_git_repository() {
+  git branch > /dev/null 2>&1
+}
+
+# Get the name of the current branch
+get_branch_name() { 
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+
+# Determine the branch/state information for this git repository.
+set_git_branch() {
+  # Capture the output of the "git status" command.
+  git_status="$(git status 2> /dev/null)"
+
+  # Set color based on clean/staged/dirty.
+  if [[ ${git_status} =~ "working tree clean" ]]; then
+    state="${GREEN}"
+  elif [[ ${git_status} =~ "Changes to be committed" ]]; then
+    state="${LIGHT_YELLOW}"
+  else
+    state="${LIGHT_RED}"
+  fi
+
+  # Set arrow icon based on status against remote.
+  remote_pattern="Your branch is (ahead|behind)+ "
+  if [[ ${git_status} =~ ${remote_pattern} ]]; then
+    if [[ ${BASH_REMATCH[1]} == "ahead" ]]; then
+      remote="↑"
+    else
+      remote="↓"
+    fi
+  else
+    remote=""
+  fi
+  diverge_pattern="Your branch and (.*) have diverged"
+  if [[ ${git_status} =~ ${diverge_pattern} ]]; then
+    remote="↕"
+  fi
+
+  # Set the final branch string.
+  BRANCH=" ${state}$(get_branch_name)${remote}${DEFAULT}"
+}
+
+
+# Determine active Python virtualenv details.
+set_virtualenv() {
+  #VIRTUAL_ENV=$(conda info --envs)
+  if test -z "$VIRTUAL_ENV" ; then
+      PYTHON_VIRTUALENV=""
+  else
+    venv=$(basename $VIRTUAL_ENV)
+    if [[ ${venv::1} == "." ]]; then
+        venv=${venv:1}
+    fi
+    PYTHON_VIRTUALENV="${LIGHT_CYAN}(`basename \"$venv\"`)${DEFAULT} "
+  fi
+}
+
+
+# Set the full bash prompt.
+set_bash_prompt() {
+  # Set the PYTHON_VIRTUALENV variable.
+  set_virtualenv
+
+  # Set the BRANCH variable.
+  if is_git_repository ; then
+    set_git_branch
+  else
+    BRANCH=''
+  fi
+
+  SHORTPATH=" ${YELLOW}$(basename $(dirname "$PWD"))/$(basename "$PWD")${DEFAULT}"
+
+  # Set the bash prompt variable.
+  PS1=" ${PYTHON_VIRTUALENV}${LIGHT_GREEN}[\u@\h] ${SHORTPATH}${BRANCH}$ "
+}
+
+# Tell bash to execute this function just before displaying its prompt.
+PROMPT_COMMAND=set_bash_prompt

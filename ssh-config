@@ -1,0 +1,15 @@
+## ====== Repository connecitons ====== ##
+Host gitlab.com
+    Hostname gitlab.com
+    User git
+    IdentityFile ~/.ssh/gitlab
+
+Host github.com
+    Hostname github.com
+    User git
+    IdentityFile ~/.ssh/github
+
+Host bitbucket.org
+    Hostname bitbucket.org
+    User git
+    IdentityFile ~/.ssh/bitbucket

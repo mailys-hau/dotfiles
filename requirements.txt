@@ -1,0 +1,12 @@
+jupyterlab
+matplotlib
+monai
+numpy
+pandas
+pillow
+plotly
+pymongo
+pytorch-lightning
+rich
+scikit-learn
+wandb
